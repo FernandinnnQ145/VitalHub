@@ -30,6 +30,8 @@ import { Main } from "./src/screens/Main/Main";
 import Camera2, { CameraComponent } from "./src/screens/Camera/Camera";
 import Camera from "./src/screens/Camera/Camera";
 import { TextInput } from "react-native";
+import { UserDecodeToken } from "./src/utils/Auth";
+import { useEffect } from "react";
 
 const Stack = createNativeStackNavigator();
 
