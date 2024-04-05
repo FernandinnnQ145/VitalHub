@@ -17,7 +17,7 @@ import {
 import { Button, TouchableOpacity } from "react-native";
 
 export const Card = ({
-  situacao = "pendente",
+  situacao,
   onPressCancel,
   onPressAppointment,
   onPressMedico,
@@ -44,7 +44,7 @@ export const Card = ({
               CRM-{consultas.medicoClinica.medico.crm}
             </IdadePaciente>
             <TextBold situacao={situacao}>
-              {consultas.prioridade.prioridade}
+              {consultas.prioridade.prioridade == "2" ? "Exame" : consultas.prioridade.prioridade == "1" ? "Rotina" : "Urgência"}
             </TextBold>
           </BoxRow>
         </DataProfilleCard>
@@ -54,14 +54,14 @@ export const Card = ({
             <AntDesign
               name="clockcircle"
               size={14}
-              color={situacao === "pendente" ? "#49B3BA" : "#4E4B59"}
+              color={situacao === "Agendadas" ? "#49B3BA" : "#4E4B59"}
             />
             <TextBoldClock situacao={situacao}>14:00</TextBoldClock>
           </HoraConsulta>
 
-          {situacao == "cancelado" ? (
+          {situacao == "Canceladas" ? (
             <></>
-          ) : situacao == "pendente" ? (
+          ) : situacao == "Agendadas" ? (
             <ButtonCard onPress={onPressCancel}>
               <ButtonText situacao={situacao}>Cancelar</ButtonText>
             </ButtonCard>

@@ -36,7 +36,7 @@ export const HomePaciente = ({ navigation }) => {
   const [showModalAgendar, setShowModalAgendar] = useState(false);
   const [showModalMedico, setShowModalMedico] = useState(false);
 
-  const [consultaSelecionada, setConsultaSelecionada] = useState(null)
+  const [consultaSelecionada, setConsultaSelecionada] = useState(null);
 
   async function profileLoad() {
     const token = await UserDecodeToken();
@@ -55,26 +55,20 @@ export const HomePaciente = ({ navigation }) => {
       `/Pacientes/BuscarPorData?data=${dataConsulta}&id=${token.id}`
     );
     const data = await promise.data;
-    console.log("SITUACAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
     console.log(data);
 
-  
-
     setConsultas(data);
-    setStatusLista(data.situacao.situacao)
-    
+    setStatusLista(data.situacao.situacao);
   }
-
 
   //Funcao para os modais
   function MostrarModal(modal, consulta) {
+    setConsultaSelecionada(consulta);
 
-    setConsultaSelecionada(consulta)
-
-    if (modal == 'cancelar') {
-      setShowModalCancel(true)
+    if (modal == "cancelar") {
+      setShowModalCancel(true);
     } else {
-      setShowModalMedico(true)
+      setShowModalMedico(true);
     }
   }
 
@@ -82,7 +76,6 @@ export const HomePaciente = ({ navigation }) => {
     profileLoad();
     // getConsultas();
   }, []);
-
 
   useEffect(() => {
     console.log(dataConsulta);
@@ -130,19 +123,18 @@ export const HomePaciente = ({ navigation }) => {
       <ListComponent
         data={consultas}
         keyExtractor={(item) => item.id}
-        renderItem={
-          ({ item }) => (
-            statusLista == item.situacao.situacao && (
+        renderItem={({ item }) =>
+          statusLista == item.situacao.situacao && (
             <Card
+              situacao={item.situacao.situacao}
               consultas={item}
               // situacao={item.situacao}
-              onPressCancel={() => MostrarModal('cancelar', item)}
+              onPressCancel={() => MostrarModal("cancelar", item)}
               onPressAppointment={() =>
                 navigation.replace("PrescricaoConsulta")
               }
-              onPressMedico={() => MostrarModal('local', item)}
+              onPressMedico={() => MostrarModal("local", item)}
             />
-          )
           )
         }
         showsVerticalScrollIndicator={false}
@@ -155,8 +147,6 @@ export const HomePaciente = ({ navigation }) => {
       {/* modal cancelar */}
       <CancelattionModal
         consulta={consultaSelecionada}
-        
-
         visible={showModalCancel}
         setShowModalCancel={setShowModalCancel}
       />
@@ -171,7 +161,6 @@ export const HomePaciente = ({ navigation }) => {
 
       <MedicoModal
         consulta={consultaSelecionada}
-
         visible={showModalMedico}
         setShowModalMedico={setShowModalMedico}
         navigation={navigation}
