@@ -9,12 +9,14 @@ import { ButtonSecundarioTitleBlue } from "../../components/ButtonTitle/Style"
 import Map from "../../components/Map/Map"
 import { useEffect, useState } from "react"
 import api from "../../services/service"
+import { UserDecodeToken } from "../../utils/Auth"
 
 export const LocalConsulta = ({
     navigation,
     route
 }) => {
     const [clinica, setClinica] = useState(null)
+    const [nome, setNome] = useState("")
 
     async function BuscarClinica() {
         await api.get(`/Clinica/BuscarPorId?id=${route.params.clinicaId}`)
@@ -29,11 +31,21 @@ export const LocalConsulta = ({
             })
 
     }
+    async function profileLoad() {
+        const token = await UserDecodeToken();
+    
+       
+    
+        if (token) {
+          setNome(token.name);
+        }
+      }
 
     useEffect(() => {
         if (clinica == null) {
             BuscarClinica()
         }
+        profileLoad()
     }, [clinica])
 
     return (
@@ -42,14 +54,16 @@ export const LocalConsulta = ({
                 clinica != null && (
                     <>
                         <Map 
-                        // latitude={clinica.endereco.latitude}
-                        // longitude={clinica.endereco.longitude}
+                        latitude={clinica.endereco.latitude}
+                        longitude={clinica.endereco.longitude}
+                        nomeClinica={clinica.nomeFantasia}
+                        nomeUsuario={nome}
                         />
 
 
 
                         <TitleGray>{clinica.nomeFantasia}</TitleGray>
-                        <SubTitleLocal>São Paulo, SP</SubTitleLocal>
+                        <SubTitleLocal>{clinica.endereco.cidade}</SubTitleLocal>
 
 
                         <Box>
@@ -67,8 +81,8 @@ export const LocalConsulta = ({
                                     fieldWidth={45}
                                 />
                                 <BoxInputPreenchido
-                                    value={clinica.endereco.cidade}
-                                    textLabel='Bairro'
+                                    value={JSON.stringify(clinica.endereco.cep)}
+                                    textLabel='Cep'
                                     fieldWidth={45}
                                 />
                             </BoxInputRow>

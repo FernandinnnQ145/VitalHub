@@ -18,12 +18,15 @@ import { mapskey } from '../../utils/mapsKey';
 
 export default function Map({
   latitude,
-  longitude
+  longitude,
+  nomeClinica,
+  nomeUsuario
+
 }) {
   const mapReference = useRef(null)
   const [finalPosition, setFinalPosition] = useState({
-    latitude: -23.61186,
-    longitude: -46.49744
+    latitude: latitude,
+    longitude: longitude
   })
 
   const [initialPosition, setInitialPosition] = useState(null)
@@ -120,9 +123,7 @@ export default function Map({
                   latitude: initialPosition.coords.latitude,
                   longitude: initialPosition.coords.longitude
                 }}
-                title='Alianz Parque'
-                description='PALMEIRAS PALMEIRAS PALMEIRAS MEU PALMEIRASSS'
-                pinColor='green'
+                title={`${nomeUsuario}`}
               />
               <MapViewDirections
                 origin={initialPosition.coords}
@@ -141,12 +142,10 @@ export default function Map({
 
               <Marker
                 coordinate={{
-                  latitude: initialPosition.coords.latitude,
-                  longitude: initialPosition.coords.longitude
+                  latitude: finalPosition.latitude,
+                  longitude: finalPosition.longitude
                 }}
-                title='Local Sao Caetano'
-                description='AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-                pinColor='orange'
+                title={`${nomeClinica}`}
               />
             </MapView>
           )
