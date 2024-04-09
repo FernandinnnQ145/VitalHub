@@ -7,14 +7,12 @@ import { ButtonSecundarioTitleBlue, ButtonTitle } from "../ButtonTitle/Style"
 
 export const MedicoModal = ({
     consulta,
-    roleUsuario,
     visible,
     setShowModalMedico,
     navigation,
     ...rest
 }) => {
     function HandlePress(rota){
-        console.log(consulta);
 
         navigation.replace(rota, { clinicaId: consulta.medicoClinica.clinicaId })
     }

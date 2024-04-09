@@ -37,6 +37,7 @@ export const HomePaciente = ({ navigation }) => {
   const [showModalMedico, setShowModalMedico] = useState(false);
 
   const [consultaSelecionada, setConsultaSelecionada] = useState(null);
+  const [consultaId, setConsultaId] = useState("")
 
   async function profileLoad() {
     const token = await UserDecodeToken();
@@ -54,9 +55,10 @@ export const HomePaciente = ({ navigation }) => {
     const promise = await api.get(
       `/Pacientes/BuscarPorData?data=${dataConsulta}&id=${token.id}`
     );
+
     const data = await promise.data;
     console.log(data);
-
+      
     setConsultas(data);
     setStatusLista(data.situacao.situacao);
   }
@@ -70,6 +72,10 @@ export const HomePaciente = ({ navigation }) => {
     } else {
       setShowModalMedico(true);
     }
+  }
+
+  function HandlePressConsuta(rota, consulta){
+    navigation.replace(rota, { consultaId: consulta.id})
   }
 
   useEffect(() => {
@@ -131,7 +137,7 @@ export const HomePaciente = ({ navigation }) => {
               // situacao={item.situacao}
               onPressCancel={() => MostrarModal("cancelar", item)}
               onPressAppointment={() =>
-                navigation.replace("PrescricaoConsulta")
+                HandlePressConsuta("PrescricaoConsulta", item)
               }
               onPressMedico={() => MostrarModal("local", item)}
             />

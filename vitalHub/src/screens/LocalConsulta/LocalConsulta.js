@@ -21,11 +21,9 @@ export const LocalConsulta = ({
     async function BuscarClinica() {
         await api.get(`/Clinica/BuscarPorId?id=${route.params.clinicaId}`)
             .then(response => {
-                console.log(response.data);
                 setClinica(response.data)
                 
-                const numeroEndereco = clinica.endereco.numero
-                setNumero(numeroEndereco)
+                
             }).catch(error => {
                 console.log(error);
             })
