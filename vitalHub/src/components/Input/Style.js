@@ -41,7 +41,7 @@ export const InputProntuario = styled.TextInput.attrs({
 height: ${(props) => `${props.height}px`};
 
 
-border: 1px solid #49B3BA;
+border: 2px solid #49B3BA;
     border-radius: 5px;
     font-family: 'MontserratAlternates_600SemiBold';
     font-size: 14px;

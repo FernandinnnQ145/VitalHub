@@ -36,6 +36,7 @@ width: 30%;
 border: 2px solid #60BFC5;
 align-items: center;
 justify-content: center;
+border-radius: 5px;
 `
 
 export const TitleBtnModal = styled.Text`
