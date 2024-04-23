@@ -17,6 +17,13 @@ import api from "../../services/service";
 import { ActivityIndicator } from "react-native";
 import { dateFormatDbToView } from "../../utils/FormatDate";
 
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
+import { ButtonCamera } from "./Style.js";
+
+import * as ImagePicker from "expo-image-picker";
+import * as MediaLibrary from "expo-media-library";
+
 export const TelaPerfil = ({ navigation }) => {
   const [profile, setProfile] = useState("");
   const [email, setEmail] = useState("");
@@ -25,6 +32,7 @@ export const TelaPerfil = ({ navigation }) => {
   const [dadosPerfil, setDadosPerfil] = useState("");
   const [dataNascimento, setDataNascimento] = useState("");
   const [isEditable, setIsEditable] = useState(true);
+  const [role, setRole] = useState("");
 
   async function profileLoad() {
     const token = await UserDecodeToken();
@@ -32,8 +40,10 @@ export const TelaPerfil = ({ navigation }) => {
     if (token) {
       console.log(`token`);
       console.log(token);
+      console.log(token.role);
       await getProfile(token);
       setProfile(token);
+      setRole(token.role);
     }
   }
 
@@ -67,6 +77,10 @@ export const TelaPerfil = ({ navigation }) => {
     }
   }
 
+  async function editarPerfil() {
+    // const promise = await api.put(role == "Paciente" ? `/Pacientes?=${profile.id}` : ``);
+  }
+
   useEffect(() => {
     profileLoad();
     // getProfile();
@@ -79,6 +93,16 @@ export const TelaPerfil = ({ navigation }) => {
           <ImagemPerfil
             source={require("../../assets/image/Imagem_exemplo_perfil.png")}
           >
+            <ButtonCamera
+              onPress={() => navigation.navigate("CameraComponent")}
+            >
+              <MaterialCommunityIcons
+                name="camera-plus"
+                size={20}
+                color="#FBFBFB"
+              />
+            </ButtonCamera>
+
             <InfoPerfil>
               <NamePerfil>{profile.name}</NamePerfil>
               <EmailPerfil>{profile.email}</EmailPerfil>
@@ -88,32 +112,32 @@ export const TelaPerfil = ({ navigation }) => {
           <Box>
             <BoxInputPreenchido
               textLabel="Data de nascimento:"
-              value={dataNascimento}
+              placeholder={dataNascimento}
               editable={isEditable}
               //dateFormatDbToView(dadosPerfil.dataNascimento)
               // new Date.ToLocaleDateString(profile.dataNascimento)
             />
             <BoxInputPreenchido
               textLabel="CPF"
-              value={dadosPerfil.cpf}
+              placeholder={dadosPerfil.cpf}
               editable={isEditable}
             />
             <BoxInputPreenchido
               editable={isEditable}
               textLabel="Endereço"
-              value={`${dadosPerfil.logradouro}, ${dadosPerfil.numero}`}
+              placeholder={`${dadosPerfil.logradouro}, ${dadosPerfil.numero}`}
             />
             <BoxInputRow>
               <BoxInputPreenchido
                 editable={isEditable}
                 textLabel="Cep"
-                value={dadosPerfil.cep}
+                placeholder={dadosPerfil.cep}
                 fieldWidth={45}
               />
               <BoxInputPreenchido
                 editable={isEditable}
                 textLabel="Cidade"
-                value={dadosPerfil.cidade}
+                placeholder={dadosPerfil.cidade}
               />
             </BoxInputRow>
 

@@ -48,6 +48,7 @@ export default function App() {
   if (!fontsLoaded && !fontError) {
     return null;
   }
+
   return (
     //Container-
     //Navigator-Componente

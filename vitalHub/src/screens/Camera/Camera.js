@@ -24,6 +24,7 @@ export const CameraComponent = ({ navigation, setfotoTirada }) => {
   const [openModal, setOpenModal] = useState(false);
   const [lanterna, setLanterna] = useState(Camera.Constants.FlashMode.off);
   const [salvarPhoto, setSalvarPhoto] = useState(null);
+  const [latePhoto, setLatePhoto] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -33,6 +34,8 @@ export const CameraComponent = ({ navigation, setfotoTirada }) => {
       const { status: mediaStatus } =
         await MediaLibrary.requestPermissionsAsync();
     })();
+
+    GetLatestPhoto();
   }, []);
 
   async function CapturePhoto() {
@@ -63,6 +66,19 @@ export const CameraComponent = ({ navigation, setfotoTirada }) => {
         console.log("nao foi possivel salvar a foto");
         console.log("a");
       });
+  }
+
+  async function GetLatestPhoto() {
+    const assets = await MediaLibrary.getAssetsAsync({
+      sortBy: [[MediaLibrary.SortBy.creationTime, false]],
+      first: 1,
+    });
+
+    if (assets.length > 0) {
+      setLatePhoto(assets[0].uri);
+    }
+
+    console.log(assets);
   }
 
   return (

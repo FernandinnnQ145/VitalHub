@@ -39,7 +39,7 @@ export const Login = ({ navigation }) => {
         // console.log(response);
 
         await AsyncStorage.setItem("token", JSON.stringify(response.data));
-        const token = await AsyncStorage.getItem("token")
+        const token = await AsyncStorage.getItem("token");
 
         // console.log("TOKEN DO LOGIN::::::::::");
         // console.log(token);
