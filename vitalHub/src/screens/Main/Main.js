@@ -7,10 +7,25 @@ import { TelaPerfil } from "../TelaPerfil/TelaPerfil";
 import { ContentIcon, TextIcon } from "./Style";
 import { FontAwesome, FontAwesome5 } from "@expo/vector-icons";
 import { HomeMedico } from "../HomeMedico/HomeMedico";
+import { UserDecodeToken } from "../../utils/Auth";
+import { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 
 const BottomTab = createBottomTabNavigator();
 
 export const Main = () => {
+  const [token, setToken] = useState("");
+
+  async function getRole() {
+    const tokendecodificado = await UserDecodeToken();
+    console.log("ROLEEEEEEEE");
+    console.log(tokendecodificado.role);
+    setToken(tokendecodificado);
+  }
+
+  useEffect(() => {
+    getRole();
+  }, []);
   return (
     <BottomTab.Navigator
       initialRouteName="HomePaciente"
@@ -48,7 +63,11 @@ export const Main = () => {
         },
       })}
     >
-      <BottomTab.Screen name="HomePaciente" component={HomePaciente} />
+      {token.role == "Paciente" ? (
+        <BottomTab.Screen name="HomePaciente" component={HomePaciente} />
+      ) : (
+        <BottomTab.Screen name="HomeMedico" component={HomeMedico} />
+      )}
 
       <BottomTab.Screen name="TelaPerfil" component={TelaPerfil} />
     </BottomTab.Navigator>

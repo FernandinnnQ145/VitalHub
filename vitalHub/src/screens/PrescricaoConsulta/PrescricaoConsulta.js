@@ -18,20 +18,13 @@ import api from "../../services/service"
 export const PrescricaoConsulta = ({
     navigation,
     route,
-}) => {
-
+}) => {    
     const [consulta, setConsulta] = useState(null)
 
     async function BuscarConsulta() {
         console.log("Infooooo consultaaaaa");
         const promise = await api.get(`/Consultas/BuscarPorId?id=${route.params.consultaId}`)
-
-
         setConsulta(promise.data)
-
-
-
-
     }
 
     useEffect(() => {
@@ -46,7 +39,7 @@ export const PrescricaoConsulta = ({
         <ContainerScrollView>
             <Containerwhite>
                 {
-                    consulta != null && (
+                    consulta != null  ?
                         <>
                             <ImagemPerfil
                                 source={require('../../assets/image/Imagem_medico_prescricao.png')}>
@@ -121,16 +114,11 @@ export const PrescricaoConsulta = ({
 
 
                             <ColocarImagemBox>
-                                {consulta.exames.map((exame, index) => (
 
-                                <TextPrescricao key={index}>{exame.titulo}</TextPrescricao>
-                                ))}
-                                {/* Arrua=mar mais tarde esse map, mais de um exame vai dar ruim */}
-                                {consulta.exames.map((exame, index) => (
 
-                                <TextPrescricao key={index} >{exame.descricao}</TextPrescricao>
-                               
-                                ))}
+                                <TextPrescricao>{consulta.exames.descricao}</TextPrescricao>
+
+
                             </ColocarImagemBox>
 
 
@@ -139,7 +127,9 @@ export const PrescricaoConsulta = ({
                                 <ButtonSecundarioTitleBlue>Voltar</ButtonSecundarioTitleBlue>
                             </ButtonSecundario>
                         </>
-                    )
+                        :
+                        <>
+                        </>
                 }
 
 

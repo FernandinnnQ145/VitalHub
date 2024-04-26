@@ -30,6 +30,7 @@ import { Main } from "./src/screens/Main/Main";
 import Camera2, { CameraComponent } from "./src/screens/Camera/Camera";
 import Camera from "./src/screens/Camera/Camera";
 import { TextInput } from "react-native";
+import { ProntuarioPreenchido } from "./src/screens/ProntuarioPreenchido/ProntuarioPreenchido";
 
 const Stack = createNativeStackNavigator();
 
@@ -100,6 +101,11 @@ export default function App() {
           name="Prontuario"
           component={Prontuario}
           options={{ title: "Prontuario" }}
+        />
+        <Stack.Screen
+          name="ProntuarioPreenchido"
+          component={ProntuarioPreenchido}
+          options={{ title: "ProntuarioPreenchido" }}
         />
         <Stack.Screen
           name="HomeMedico"

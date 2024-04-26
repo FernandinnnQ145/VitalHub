@@ -22,6 +22,7 @@ import { MedicoModal } from "../../components/MedicoModal/MedicoModal";
 import { UserDecodeToken } from "../../utils/Auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../services/service";
+import { CancelattionModalPaciente } from "../../components/CancelattionModalPaciente/CancelationModalPaciente";
 
 export const HomePaciente = ({ navigation }) => {
   const [nome, setNome] = useState("");
@@ -37,7 +38,7 @@ export const HomePaciente = ({ navigation }) => {
   const [showModalMedico, setShowModalMedico] = useState(false);
 
   const [consultaSelecionada, setConsultaSelecionada] = useState(null);
-  const [consultaId, setConsultaId] = useState("")
+  const [situacao, setSituacao] = useState("")
 
   async function profileLoad() {
     const token = await UserDecodeToken();
@@ -58,10 +59,13 @@ export const HomePaciente = ({ navigation }) => {
 
     const data = await promise.data;
     console.log(data);
-      
+
     setConsultas(data);
     setStatusLista(data.situacao.situacao);
   }
+
+
+
 
   //Funcao para os modais
   function MostrarModal(modal, consulta) {
@@ -69,13 +73,14 @@ export const HomePaciente = ({ navigation }) => {
 
     if (modal == "cancelar") {
       setShowModalCancel(true);
+      setSituacao(consulta.situacao.situacao)
     } else {
       setShowModalMedico(true);
     }
   }
 
-  function HandlePressConsuta(rota, consulta){
-    navigation.replace(rota, { consultaId: consulta.id})
+  function HandlePressConsuta(rota, consulta) {
+    navigation.replace(rota, { consultaId: consulta.id })
   }
 
   useEffect(() => {
@@ -86,7 +91,7 @@ export const HomePaciente = ({ navigation }) => {
   useEffect(() => {
     console.log(dataConsulta);
     getConsultas();
-  }, [dataConsulta]);
+  }, [dataConsulta, situacao]);
 
   return (
     <Containerwhite>
@@ -151,7 +156,7 @@ export const HomePaciente = ({ navigation }) => {
       </ButtonAgendar>
 
       {/* modal cancelar */}
-      <CancelattionModal
+      <CancelattionModalPaciente
         consulta={consultaSelecionada}
         visible={showModalCancel}
         setShowModalCancel={setShowModalCancel}

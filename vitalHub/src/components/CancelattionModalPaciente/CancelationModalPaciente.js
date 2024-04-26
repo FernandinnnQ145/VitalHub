@@ -25,7 +25,7 @@ Notifications.setNotificationHandler({
     })
 })
 
-export const CancelattionModal = ({
+export const CancelattionModalPaciente = ({
     consulta,
     visible,
     setSituacao,
@@ -38,6 +38,7 @@ export const CancelattionModal = ({
 
         console.log("Consulta id aqui");
         console.log(consulta.id);
+        console.log("A");
         await api.put(`Consultas/Status?idConsulta=${consulta.id}&status=Canceladas`)
         .then(() =>{
             setSituacao("Canceladas")

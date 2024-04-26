@@ -17,28 +17,29 @@ import { CancelattionModal } from "../../components/CancelattionModal/Cancelatio
 import { AppointmentModal } from "../../components/AppointmentModal/AppointmentModal";
 import { UserDecodeToken } from "../../utils/Auth";
 import { ActivityIndicator } from "react-native";
+import { CardConsultaMedico } from "../../components/CardConsultaMedico/CardConsultaMedico";
+import api from "../../services/service";
 
 export const HomeMedico = ({ navigation }) => {
   const [nome, setNome] = useState("");
+  const [dataConsulta, setDataConsulta] = useState("");
+  const [consultas, setConsultas] = useState([]);
 
   //state para o estado da lista(cards)
-  const [statusLista, setStatusLista] = useState("pendente");
+  const [statusLista, setStatusLista] = useState("Agendadas");
 
   //state para exibicao dos modals
   const [showModalCancel, setShowModalCancel] = useState(false);
   const [showModalAppointment, setShowModalAppointment] = useState(false);
+  const [consultaSelecionada, setConsultaSelecionada] = useState(null);
 
-  const Consultas = [
-    { id: 1, nome: "Fernando", situacao: "pendente" },
-    { id: 2, nome: "Fernando", situacao: "cancelado" },
-    { id: 3, nome: "Fernando", situacao: "realizado" },
-    { id: 4, nome: "Fernando", situacao: "pendente" },
-    { id: 5, nome: "Fernando", situacao: "cancelado" },
-  ];
+  const [situacao, setSituacao] = useState("")
+
+
+
 
   async function profileLoad() {
     const token = await UserDecodeToken();
-    console.log("asdasdasd");
 
     if (token) {
       console.log(token);
@@ -48,9 +49,51 @@ export const HomeMedico = ({ navigation }) => {
     }
   }
 
+
+  async function getConsultas() {
+    const token = await UserDecodeToken();
+    // console.log("CONSULTASSSSSSSSSSSSSSSSS"${dataConsulta});
+    const promise = await api.get(
+      `/Medicos/BuscarPorData?data=${dataConsulta}&id=${token.id}`
+    );
+
+    const data = await promise.data;
+    console.log(data);
+
+    setConsultas(data);
+    setStatusLista(data.situacao.situacao);
+  }
+
+  //Funcao para os modais
+  function MostrarModal(modal, consulta) {
+    setConsultaSelecionada(consulta);
+
+    if (modal == "cancelar") {
+      setShowModalCancel(true);
+      setSituacao(consulta.situacao.situacao)
+    } else {
+      setShowModalAppointment(true);
+    }
+  }
+
+
+  
+
+
+
+
+
+
+
   useEffect(() => {
     profileLoad();
+    // getConsultas();
   }, []);
+
+  useEffect(() => {
+    console.log(dataConsulta);
+    getConsultas();
+  }, [dataConsulta, situacao]);
 
   return (
     <Containerwhite>
@@ -70,38 +113,38 @@ export const HomeMedico = ({ navigation }) => {
         <Ionicons name="notifications" size={24} color="white" />
       </HeaderHome>
 
-      <CalendarHome />
+      <CalendarHome setDataConsulta={setDataConsulta} />
 
       <ButtonsHome>
         <BtnListAppointment
           textButton="Agendadas"
-          clickButton={statusLista === "pendente"}
-          onPress={() => setStatusLista("pendente")}
+          clickButton={statusLista === "Agendadas"}
+          onPress={() => setStatusLista("Agendadas")}
         />
         <BtnListAppointment
           textButton="Realizadas"
-          clickButton={statusLista === "realizado"}
-          onPress={() => setStatusLista("realizado")}
+          clickButton={statusLista === "Realizadas"}
+          onPress={() => setStatusLista("Realizadas")}
         />
         <BtnListAppointment
           textButton="Canceladas"
-          clickButton={statusLista === "cancelado"}
-          onPress={() => setStatusLista("cancelado")}
+          clickButton={statusLista === "Canceladas"}
+          onPress={() => setStatusLista("Canceladas")}
         />
       </ButtonsHome>
 
-      {/* Secao Card */}
+      {/* Secao Card
       {/* Lista */}
       <ListComponent
-        data={Consultas}
+        data={consultas}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) =>
-          statusLista == item.situacao && (
-            <Card
-              situacao={item.situacao}
-              onPressCancel={() => setShowModalCancel(true)}
-              onPressMedico={() => navigation.replace("Prontuario")}
-              onPressAppointment={() => setShowModalAppointment(true)}
+          statusLista == item.situacao.situacao && (
+            <CardConsultaMedico
+              situacao={item.situacao.situacao}
+              consultas={item}
+              onPressCancel={() => MostrarModal("cancelar", item)}
+              onPressAppointment={() => MostrarModal("appointment", item)}
             />
           )
         }
@@ -110,6 +153,8 @@ export const HomeMedico = ({ navigation }) => {
 
       {/* modal cancelar */}
       <CancelattionModal
+        consulta={consultaSelecionada}
+        setSituacao={setSituacao}
         visible={showModalCancel}
         setShowModalCancel={setShowModalCancel}
       />
@@ -117,6 +162,7 @@ export const HomeMedico = ({ navigation }) => {
       {/* modal ver prontuario */}
 
       <AppointmentModal
+        consulta={consultaSelecionada}
         visible={showModalAppointment}
         setShowModalAppointment={setShowModalAppointment}
         navigation={navigation}

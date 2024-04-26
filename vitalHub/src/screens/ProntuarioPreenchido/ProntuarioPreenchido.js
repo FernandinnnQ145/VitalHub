@@ -4,7 +4,7 @@ import { ImagemPerfil } from "../../components/ImagemPerfil/Style"
 import { InfoPerfil } from "../../components/InfoPerfil/Style"
 import { EmailPerfil, NamePerfil } from "../../components/Title/Style"
 import { Box } from "../../components/BoxCadastrar/Style"
-import { BoxInput } from "../../components/InputAndLabel/Index"
+import { BoxInput, BoxInputPreenchido } from "../../components/InputAndLabel/Index"
 import { Button, ButtonBlock, ButtonSecundario } from "../../components/Button/Style"
 import { ButtonSecundarioTitleBlue, ButtonTitle } from "../../components/ButtonTitle/Style"
 import api from "../../services/service"
@@ -12,29 +12,15 @@ import { useEffect, useState } from "react"
 import { format, differenceInYears } from "date-fns";
 
 
-export const Prontuario = ({
+export const ProntuarioPreenchido = ({
     navigation,
     route,
 }) => {
     const [consulta, setConsulta] = useState(null)
-    const [descricaoNova, setDescricaoNova] = useState("")
-    const [medicamentoNovo, setMedicamentoNovo] = useState("")
-    const [diagnosticoNovo, setDiagnosticoNovo] = useState("")
     
 
 
-    async function NovoProntuario() {
-        const promise = await api.put(`/Consultas/Prontuario`, {
-            consultaId: route.params.consultaId,
-            medicamento: medicamentoNovo,
-            descricao: descricaoNova,
-            diagnostico: diagnosticoNovo
-        }).then(()=>{
-            navigation.replace("Main")
-        }).catch((error =>{
-            console.log(error);
-        }))
-    }
+   
 
     async function BuscarConsulta() {
         console.log("Infooooo consultaaaaa");
@@ -76,39 +62,30 @@ export const Prontuario = ({
 
 
                             <Box>
-                                <BoxInput
+                                <BoxInputPreenchido
                                     textLabel='Descricao da consulta:'
                                     placeholder='Descrição'
-                                    value={descricaoNova}
-                                    onChangeText={
-                                        (txt) => setDescricaoNova(txt)
-                                    }
+                                    value={consulta.descricao}
                                     height={120}
                                     paddingBottom={60}
-                                    editable={true}
+                                    editable={false}
                                     multiline={true}
                                     numberOfLines={4}
                                 />
-                                <BoxInput
+                                <BoxInputPreenchido
                                     textLabel='Diagnóstico do paciente:'
                                     placeholder='Diagnóstico'
-                                    value={diagnosticoNovo}
-                                    onChangeText={
-                                        (txt) => setDiagnosticoNovo(txt)
-                                    }
-                                    editable={true}
+                                    value={consulta.diagnostico}
+                                    editable={false}
 
                                 />
-                                <BoxInput
+                                <BoxInputPreenchido
                                     textLabel='Prescrição médica:'
                                     placeholder='Prescrição medica'
-                                    value={medicamentoNovo}
-                                    onChangeText={
-                                        (txt) => setMedicamentoNovo(txt)
-                                    }
+                                    value={consulta.receita.medicamento}
                                     height={120}
                                     paddingBottom={60}
-                                    editable={true}
+                                    editable={false}
                                     multiline={true}
                                     numberOfLines={4}
 
@@ -117,13 +94,13 @@ export const Prontuario = ({
 
 
 
-                                <Button onPress={() => NovoProntuario()}>
+                                <Button>
                                     <ButtonTitle>Salvar</ButtonTitle>
                                 </Button>
 
-                                <ButtonBlock>
+                                <Button>
                                     <ButtonTitle>Editar</ButtonTitle>
-                                </ButtonBlock>
+                                </Button>
                             </Box>
                             <ButtonSecundario>
                                 <ButtonSecundarioTitleBlue onPress={() => navigation.replace("Main")}>Cancelar</ButtonSecundarioTitleBlue>

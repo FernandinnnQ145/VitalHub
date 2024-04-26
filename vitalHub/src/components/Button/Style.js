@@ -13,6 +13,11 @@ export const Button = styled.TouchableOpacity`
   border: 1px solid #496bba;
 `;
 
+export const ButtonBlock = styled(Button)`
+  background-color: #ACABB7;
+  border: #ACABB7;
+`
+
 export const ButtonGoogle = styled(Button)`
   background-color: #ffffff;
   margin-bottom: 40px;

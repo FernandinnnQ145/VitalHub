@@ -8,10 +8,25 @@ import { Input } from "../../components/Input/Style";
 import { Button } from "../../components/Button/Style";
 import { ButtonTitle } from "../../components/ButtonTitle/Style";
 import { LinkMediumCancelar } from "../../components/LinkMedium/Style";
+import { useState } from "react";
+import api from "../../services/service";
 
 export const RecuperarSenha = ({
     navigation
 }) => {
+    const [email, setEmail] = useState('fernandinnn145@gmail.com')
+
+    async function EnviarEmail() {
+        await api.post(`/RecuperarSenha?email=${email}`)
+        .then( () =>{
+            navigation.replace("VerificarConta", { emailRecuperacao : email })
+
+        }).catch(error =>{
+            console.log(error);
+        })
+    }
+
+
     return (
         <Container>
 
@@ -29,8 +44,10 @@ export const RecuperarSenha = ({
                 <Input
                     placeholder='Usuario ou E-mail'
                     placeholderTextColor='#FFF'
+                    value={email}
+                    onChangeText={(txt) => setEmail(txt)}
                 />
-                <Button onPress={()=> navigation.replace("VerificarConta")}>
+                <Button onPress={()=> EnviarEmail()}>
                     <ButtonTitle>Continuar</ButtonTitle>
                 </Button>
             </Box>

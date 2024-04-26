@@ -7,11 +7,34 @@ import { Box } from '../../components/BoxCadastrar/Style';
 import { InputSenha } from '../../components/Input/Style';
 import { Button } from '../../components/Button/Style';
 import { ButtonTitle } from '../../components/ButtonTitle/Style';
+import { useState } from 'react';
+import api from '../../services/service';
 
 
 export const RedefinirSenha = ({
-    navigation
+    navigation,
+    route
 }) => {
+    const [senha, setSenha] = useState("")
+    const [confirmar, setConfirmar] = useState("")
+
+
+    async function AlterarSenha(){
+        if(senha === confirmar){
+            await api.put(`/Usuario/AlterarSenha?email=${route.params.emailRecuperacao}`, {
+                senhaNova : senha
+            }).then(() =>{
+                navigation.replace("Login")
+            }).catch(error =>{
+                console.log(error);
+            })
+        }else{
+            alert("Senha incompativeis")
+        }
+
+        
+    }
+
     return (
         <Container>
             <IconVoltar>
@@ -29,14 +52,20 @@ export const RedefinirSenha = ({
                 <InputSenha
                     placeholder='Nova senha'
                     placeholderTextColor='#FFF'
+
+                    value={senha}
+                    onChangeText={(txt) => setSenha(txt)}
                 />
                 <InputSenha
                     placeholder='Confirmar nova senha'
                     placeholderTextColor='#FFF'
+
+                    value={confirmar}
+                    onChangeText={(txt) => setConfirmar(txt)}
                 />
 
 
-                <Button onPress={() => navigation.replace("Login")}>
+                <Button onPress={() => AlterarSenha()}>
                     <ButtonTitle>Confirmar nova senha</ButtonTitle>
                 </Button>
             </Box>
