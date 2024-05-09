@@ -29,14 +29,11 @@ export const CardConsultaMedico = ({
   name,
 }) => {
 
-  const [dateOfBirth, setDateOfBirth] = useState(consultas.paciente.dataNascimento);
 
-
-  const calculateAge = (dateOfBirth) => {
-    return differenceInYears(new Date(), new Date(dateOfBirth));
+  const calculateAge = () => {
+    return differenceInYears(new Date(), new Date(consultas.paciente.dataNascimento));
   };
 
-  
 
   return (
     <CardPacienteAgendadas>
@@ -55,12 +52,13 @@ export const CardConsultaMedico = ({
 
           <BoxRow>
             <IdadePaciente>
-              {calculateAge(dateOfBirth) + " anos"}
+              {calculateAge() + " anos"}
             </IdadePaciente>
             <TextBold situacao={situacao}>
               {consultas.prioridade.prioridade == "2" ? "Exame" : consultas.prioridade.prioridade == "1" ? "Rotina" : "Urgência"}
             </TextBold>
           </BoxRow>
+
         </DataProfilleCard>
 
         <ViewRow>

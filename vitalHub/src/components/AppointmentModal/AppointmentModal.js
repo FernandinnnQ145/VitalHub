@@ -8,6 +8,7 @@ import { useEffect, useState } from "react"
 import api from "../../services/service"
 import { format, differenceInYears } from "date-fns";
 
+
 export const AppointmentModal = ({
     visible,
     consulta,
@@ -16,35 +17,34 @@ export const AppointmentModal = ({
     descricao,
     setShowModalAppointment,
     navigation,
+    idade,
     ...rest
 }) => {
     function HandlePress(rota) {
 
-        navigation.replace(rota, { consultaId:consulta.id })
+        navigation.replace(rota, { consultaId : consulta.id })
     }
 
 
 
-//Data de nascimento esta vindo errado, NaN anos
+    //Data de nascimento esta vindo errado, NaN anos
 //Tentar arrumar isso depois
-
-
-    
-
-const calculateAge = (dataNascimento) => {
+    const calculateAge = (dataNascimento) => {
     return differenceInYears(new Date(), new Date(dataNascimento));
   };
 
 
 
-  function QualTelaProntuario(diagnostico, descricao){
-    if(diagnostico != null && descricao !=null){
+  function QualTelaProntuario(diagnostico, descricao)
+  {
+    if(diagnostico != null && descricao !=null)
+    {
         HandlePress("ProntuarioPreenchido")
-    }else{
-      HandlePress("Prontuario")
     }
-
-
+    else
+    {
+        HandlePress("Prontuario")
+    }
   }
       
 
@@ -55,7 +55,6 @@ const calculateAge = (dataNascimento) => {
                 <Modal {...rest} visible={visible} transparent={true} animationType="fade">
                     <PatientModal>
                         <ModalContent>
-                            
                             <ImageModal
                                 source={require('../../assets/image/Image_Modal.png')}
                             />
@@ -63,7 +62,7 @@ const calculateAge = (dataNascimento) => {
 
                             <View style={{ flexDirection: "row", justifyContent: "space-between", width: 270, marginTop: 20 }}>
 
-                                <EmailPerfil>{calculateAge(consulta.paciente.dataNacimento) + " anos"}</EmailPerfil>
+                                <EmailPerfil>{calculateAge(consulta.paciente.dataNascimento)} anos</EmailPerfil>
                                 <EmailPerfil>{consulta.paciente.idNavigation.email}</EmailPerfil>
 
                             </View>

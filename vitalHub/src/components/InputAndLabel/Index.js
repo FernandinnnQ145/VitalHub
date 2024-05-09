@@ -38,7 +38,6 @@ export const BoxInputPreenchido = ({
                     paddingBottom={paddingBottom}
                     numberOfLines={numberOfLines}
                     keyboardType={keyboardType}
-
                 />
             </FieldContent>
 

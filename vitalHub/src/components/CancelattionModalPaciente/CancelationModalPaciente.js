@@ -38,7 +38,6 @@ export const CancelattionModalPaciente = ({
 
         console.log("Consulta id aqui");
         console.log(consulta.id);
-        console.log("A");
         await api.put(`Consultas/Status?idConsulta=${consulta.id}&status=Canceladas`)
         .then(() =>{
             setSituacao("Canceladas")

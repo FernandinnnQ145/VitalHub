@@ -17,6 +17,17 @@ export const ButtonBlock = styled(Button)`
   background-color: #ACABB7;
   border: #ACABB7;
 `
+export const ButtonSave = styled.TouchableOpacity`
+  margin-top: 25px;
+  width: 100%;
+  height: 44px;
+  padding: 12px 8px 12px 8px;
+  align-items: center;
+  justify-content: center;
+  background-color: #acabb7;
+  border-radius: 5px;
+  border: 1px solid #acabb7;
+`;
 
 export const ButtonGoogle = styled(Button)`
   background-color: #ffffff;

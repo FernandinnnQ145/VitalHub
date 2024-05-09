@@ -17,10 +17,10 @@ export const ProntuarioPreenchido = ({
     route,
 }) => {
     const [consulta, setConsulta] = useState(null)
-    
 
 
-   
+
+
 
     async function BuscarConsulta() {
         console.log("Infooooo consultaaaaa");
@@ -32,7 +32,18 @@ export const ProntuarioPreenchido = ({
 
     const calculateAge = (dataNascimento) => {
         return differenceInYears(new Date(), new Date(dataNascimento));
-      };
+    };
+
+
+
+    function HandlePressConsuta(item) {
+        
+            console.log("Tentando");
+            navigation.replace("Prontuario", { consultaId : item })
+            console.log("????");
+        
+    }
+
 
 
     useEffect(() => {
@@ -93,12 +104,7 @@ export const ProntuarioPreenchido = ({
 
 
 
-
-                                <Button>
-                                    <ButtonTitle>Salvar</ButtonTitle>
-                                </Button>
-
-                                <Button>
+                                <Button onPress={() => HandlePressConsuta(consulta.id)}> 
                                     <ButtonTitle>Editar</ButtonTitle>
                                 </Button>
                             </Box>

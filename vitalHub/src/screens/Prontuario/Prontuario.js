@@ -20,7 +20,7 @@ export const Prontuario = ({
     const [descricaoNova, setDescricaoNova] = useState("")
     const [medicamentoNovo, setMedicamentoNovo] = useState("")
     const [diagnosticoNovo, setDiagnosticoNovo] = useState("")
-    
+
 
 
     async function NovoProntuario() {
@@ -29,28 +29,37 @@ export const Prontuario = ({
             medicamento: medicamentoNovo,
             descricao: descricaoNova,
             diagnostico: diagnosticoNovo
-        }).then(()=>{
+        }).then(() => {
             navigation.replace("Main")
-        }).catch((error =>{
+        }).catch((error => {
             console.log(error);
         }))
     }
 
     async function BuscarConsulta() {
-        console.log("Infooooo consultaaaaa");
+        console.log("Coiso q ta vindo da home");
         const promise = await api.get(`/Consultas/BuscarPorId?id=${route.params.consultaId}`)
-        console.log(promise.data);
         setConsulta(promise.data)
+        setDescricaoNova(promise.data.descricao)
+        setDiagnosticoNovo(promise.data.diagnostico)
+        setMedicamentoNovo(promise.data.receita.medicamento)
+       ;
     }
+
+
+
 
 
     const calculateAge = (dataNascimento) => {
         return differenceInYears(new Date(), new Date(dataNascimento));
-      };
+    };
+
+    
 
 
     useEffect(() => {
         BuscarConsulta()
+
     }, [])
 
     return (
@@ -68,9 +77,7 @@ export const Prontuario = ({
                                     <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
                                         <EmailPerfil>{calculateAge(consulta.paciente.dataNascimento) + " anos"}</EmailPerfil>
                                         <EmailPerfil>{consulta.paciente.idNavigation.email}</EmailPerfil>
-
                                     </View>
-
                                 </InfoPerfil>
                             </ImagemPerfil>
 

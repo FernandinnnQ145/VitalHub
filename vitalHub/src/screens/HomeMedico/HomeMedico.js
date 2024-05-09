@@ -15,7 +15,7 @@ import { ListComponent } from "../../components/List/List";
 import { Card } from "../../components/Card/Card";
 import { CancelattionModal } from "../../components/CancelattionModal/CancelationModal";
 import { AppointmentModal } from "../../components/AppointmentModal/AppointmentModal";
-import { UserDecodeToken } from "../../utils/Auth";
+import { UserDecodeToken, idadeCalc } from "../../utils/Auth";
 import { ActivityIndicator } from "react-native";
 import { CardConsultaMedico } from "../../components/CardConsultaMedico/CardConsultaMedico";
 import api from "../../services/service";
@@ -49,7 +49,6 @@ export const HomeMedico = ({ navigation }) => {
     }
   }
 
-
   async function getConsultas() {
     const token = await UserDecodeToken();
     // console.log("CONSULTASSSSSSSSSSSSSSSSS"${dataConsulta});
@@ -75,15 +74,6 @@ export const HomeMedico = ({ navigation }) => {
       setShowModalAppointment(true);
     }
   }
-
-
-  
-
-
-
-
-
-
 
   useEffect(() => {
     profileLoad();
@@ -150,7 +140,6 @@ export const HomeMedico = ({ navigation }) => {
         }
         showsVerticalScrollIndicator={false}
       />
-
       {/* modal cancelar */}
       <CancelattionModal
         consulta={consultaSelecionada}

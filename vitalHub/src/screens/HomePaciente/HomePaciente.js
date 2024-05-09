@@ -160,6 +160,7 @@ export const HomePaciente = ({ navigation }) => {
         consulta={consultaSelecionada}
         visible={showModalCancel}
         setShowModalCancel={setShowModalCancel}
+        setSituacao={setSituacao}
       />
 
       {/* modal ver prontuario */}
