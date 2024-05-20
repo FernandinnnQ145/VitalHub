@@ -12,10 +12,6 @@ import { mapskey } from '../../utils/mapsKey';
 
 
 
-
-
-
-
 export default function Map({
   latitude,
   longitude,

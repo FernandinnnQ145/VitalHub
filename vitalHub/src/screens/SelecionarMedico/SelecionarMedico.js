@@ -10,10 +10,22 @@ import { Containerwhite } from "../../components/Container/Style";
 import { ListComponent } from "../../components/List/List";
 import { TitleGrayMargin } from "../../components/Title/Style";
 import api from "../../services/service";
+import { LogBox } from "react-native";
 
-export const SelecionarMedico = ({ navigation }) => {
+LogBox.ignoreAllLogs();
+
+export const SelecionarMedico = ({ navigation, route }) => {
   async function Login() {
     navigation.navigate("Main");
+  }
+
+  function handleContinue() {
+    navigation.replace("SelecionarData", {
+      agendamento: {
+        ...route.params.agendamento,
+        ...medico,
+      },
+    });
   }
 
   //   const Medicos = [
@@ -25,18 +37,22 @@ export const SelecionarMedico = ({ navigation }) => {
   //fora do componente
 
   //criar o state para receber a lista de medicos (array)
+  const [medico, setMedico] = useState(null);
   const [medicos, setMedicos] = useState([]);
 
   //criar a funcao para listar ou para obter a lista de médicos da api e setar no state
-  async function getMedicos() {
-    const promise = await api.get("/Medicos");
+  async function getMedico() {
+    const promise = await api.get(
+      `/Medicos/BuscarPorIdClinica?id=${route.params.agendamento.clinicaId}`
+    );
     const data = promise.data;
 
     setMedicos(data);
   }
   //criar um effect para chamada da função
   useEffect(() => {
-    getMedicos();
+    getMedico();
+    // console.log(medico);
   }, []);
 
   // crie uma funcao para verificar se o card esta selecionado
@@ -54,16 +70,16 @@ export const SelecionarMedico = ({ navigation }) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <CardMedico
-            medicos={item}
-            onPress={() => setMedicoSelect(item.id)}
-            clickButton={item.id === medicoSelectId}
+            medico={item}
+            selected={medico ? medico.medicoClinicaId == item.id : false}
+            setMedico={setMedico}
           />
         )}
         showsVerticalScrollIndicator={false}
       />
 
       <Box>
-        <Button onPress={() => navigation.replace("SelecionarData")}>
+        <Button onPress={() => handleContinue()}>
           <ButtonTitle>Continuar</ButtonTitle>
         </Button>
       </Box>

@@ -9,6 +9,7 @@ margin-bottom: 80px;
 export const ImagemPerfilHome = styled.Image`
 width: 70px;
 height: 70px;
+border-radius: 5px;
 `
 
 export const ImagePaciente = styled.Image`

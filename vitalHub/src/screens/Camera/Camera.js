@@ -1,6 +1,7 @@
 import { StatusBar } from "expo-status-bar";
 import {
   Image,
+  LogBox,
   Modal,
   StyleSheet,
   Text,
@@ -8,7 +9,7 @@ import {
   View,
 } from "react-native";
 
-import { Camera, CameraType } from "expo-camera";
+import { CameraView, useCameraPermissions, FlashMode } from "expo-camera";
 
 import * as MediaLibrary from "expo-media-library";
 
@@ -17,14 +18,36 @@ import { useEffect, useRef, useState } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Ionicons } from "@expo/vector-icons";
+import { ActionsContainer, LastPhoto } from "./Style";
 
-export const CameraComponent = ({ navigation, setfotoTirada }) => {
+import * as ImagePicker from "expo-image-picker";
+
+LogBox.ignoreAllLogs();
+
+export const CameraComponent = ({ navigation, route }) => {
   const cameraRef = useRef(null);
-  const [tipoCamera, setTipoCamera] = useState(CameraType.front);
+  const [facing, setFacing] = useState("back");
   const [openModal, setOpenModal] = useState(false);
-  const [lanterna, setLanterna] = useState(Camera.Constants.FlashMode.off);
+  const [lanterna, setLanterna] = useState("off");
   const [salvarPhoto, setSalvarPhoto] = useState(null);
-  const [latePhoto, setLatePhoto] = useState(null);
+  const [lastPhoto, setLastPhoto] = useState(null);
+
+  const [permission, requestPermission] = useCameraPermissions();
+  const [permissionMedia, requestMediaPermission] =
+    MediaLibrary.usePermissions();
+
+  useEffect(() => {
+    (async () => {
+      if (permission && !permission.granted) {
+        await requestPermission();
+      }
+
+      // const { status: mediaStatus } = await MediaLibrary.requestPermissionsAsync()
+      if (MediaLibrary.PermissionStatus.DENIED) {
+        await requestMediaPermission();
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -45,9 +68,7 @@ export const CameraComponent = ({ navigation, setfotoTirada }) => {
 
       setOpenModal(true);
 
-      console.log(photo);
-
-      await setfotoTirada(photo.uri);
+      // await setfotoTirada(photo.uri);
     }
   }
 
@@ -57,78 +78,108 @@ export const CameraComponent = ({ navigation, setfotoTirada }) => {
     setOpenModal(false);
   }
 
+  function toggleCameraFacing() {
+    setFacing((current) => (current === "back" ? "front" : "back"));
+  }
+
   async function UploadPhoto() {
-    await MediaLibrary.createAssetAsync(salvarPhoto)
-      .then(() => {
-        alert("foto salva com sucesso");
-      })
-      .catch((error) => {
-        console.log("nao foi possivel salvar a foto");
-        console.log("a");
+    // await MediaLibrary.createAssetAsync(salvarPhoto)
+    //   .then(() => {
+    //     alert("foto salva com sucesso");
+
+    if (route.params.screen == "PrescricaoConsulta") {
+      navigation.navigate("PrescricaoConsulta", {
+        uriPhoto: salvarPhoto,
+        screen: "Prescricao",
+        consultaId: route.params.idConsulta,
       });
+    } else {
+      navigation.replace("Main", {
+        uriPhoto: salvarPhoto,
+        screen: "TelaPerfil",
+        id: route.params.userId,
+      });
+    }
+
+    // })
+    // .catch((error) => {
+    //   console.log("nao foi possivel salvar a foto");
+    // });
   }
 
   async function GetLatestPhoto() {
-    const assets = await MediaLibrary.getAssetsAsync({
+    const { assets } = await MediaLibrary.getAssetsAsync({
       sortBy: [[MediaLibrary.SortBy.creationTime, false]],
       first: 1,
     });
 
     if (assets.length > 0) {
-      setLatePhoto(assets[0].uri);
+      setLastPhoto(assets[0].uri);
     }
-
-    console.log(assets);
   }
+
+  async function SelectImageGallery() {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setSalvarPhoto(result.assets[0].uri);
+      setOpenModal(true);
+    }
+  }
+
+  useEffect(() => {
+    console.log(route.params.idConsulta);
+  }, []);
 
   return (
     <View style={styles.container}>
-      <Camera
+      <CameraView
         style={styles.camera}
-        type={tipoCamera}
+        facing={facing}
         ref={cameraRef}
-        flashMode={lanterna}
         ratio="16:9"
+        flash={lanterna}
       >
         <View style={styles.viewFlip}>
           <TouchableOpacity
             style={styles.btnFlip}
-            onPress={() =>
-              setTipoCamera(
-                tipoCamera == CameraType.front
-                  ? CameraType.back
-                  : CameraType.front
-              )
-            }
+            onPress={() => toggleCameraFacing()}
           >
             <MaterialCommunityIcons name="camera-flip" size={24} color="#fff" />
           </TouchableOpacity>
 
           <TouchableOpacity
             style={styles.btnFlash}
-            onPress={() =>
-              setLanterna(
-                lanterna == Camera.Constants.FlashMode.off
-                  ? Camera.Constants.FlashMode.on
-                  : Camera.Constants.FlashMode.off
-              )
-            }
+            onPress={() => setLanterna(lanterna == "off" ? "on" : "off")}
           >
-            {lanterna == Camera.Constants.FlashMode.off ? (
+            {lanterna == "off" ? (
               <Ionicons name="flash-off" size={24} color="#fff" />
             ) : (
               <Ionicons name="flash-sharp" size={24} color="#fff" />
             )}
           </TouchableOpacity>
         </View>
-      </Camera>
+      </CameraView>
 
-      <TouchableOpacity
-        style={styles.btnCapture}
-        onPress={() => CapturePhoto()}
-      >
-        <FontAwesome name="camera" size={24} color="#ffff" />
-      </TouchableOpacity>
+      <ActionsContainer>
+        {lastPhoto != null ? (
+          <TouchableOpacity onPress={() => SelectImageGallery()}>
+            <LastPhoto source={{ uri: lastPhoto }} />
+          </TouchableOpacity>
+        ) : (
+          <></>
+        )}
+
+        <TouchableOpacity
+          style={styles.btnCapture}
+          onPress={() => CapturePhoto()}
+        >
+          <FontAwesome name="camera" size={24} color="#ffff" />
+        </TouchableOpacity>
+      </ActionsContainer>
 
       <Modal animationType="slide" transparent={false} visible={openModal}>
         <View
@@ -195,12 +246,12 @@ const styles = StyleSheet.create({
   },
   btnCapture: {
     padding: 20,
-    margin: 20,
+    // margin: 20,
     borderRadius: 10,
     backgroundColor: "#121212",
-
     justifyContent: "center",
     alignItems: "center",
+    left: -25,
   },
   btnClear: {
     padding: 20,

@@ -10,21 +10,27 @@ import { HomeMedico } from "../HomeMedico/HomeMedico";
 import { UserDecodeToken } from "../../utils/Auth";
 import { useEffect, useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
+import { LogBox } from "react-native";
+
+LogBox.ignoreAllLogs();
 
 const BottomTab = createBottomTabNavigator();
 
-export const Main = () => {
+export const Main = ({ navigation, route }) => {
   const [token, setToken] = useState("");
+
+  const routeParams = route.params;
 
   async function getRole() {
     const tokendecodificado = await UserDecodeToken();
-    console.log("ROLEEEEEEEE");
-    console.log(tokendecodificado.role);
+    
     setToken(tokendecodificado);
   }
 
   useEffect(() => {
     getRole();
+    // console.log(`route main`)
+    // console.log(route)
   }, []);
   return (
     <BottomTab.Navigator
@@ -69,7 +75,9 @@ export const Main = () => {
         <BottomTab.Screen name="HomeMedico" component={HomeMedico} />
       )}
 
-      <BottomTab.Screen name="TelaPerfil" component={TelaPerfil} />
+      <BottomTab.Screen name="TelaPerfil">
+        {(props) => <TelaPerfil route={route} navigation={navigation} />}
+      </BottomTab.Screen>
     </BottomTab.Navigator>
   );
 };

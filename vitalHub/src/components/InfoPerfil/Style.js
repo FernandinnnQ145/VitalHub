@@ -10,7 +10,7 @@ padding: 15px;
 position: relative;
 top: 230px;
 left: 10%;
-elevation: 10px;
+elevation: 10;
 shadow-color: #000000;
 shadow-radius: 15px;
 shadow-offset: 15px;

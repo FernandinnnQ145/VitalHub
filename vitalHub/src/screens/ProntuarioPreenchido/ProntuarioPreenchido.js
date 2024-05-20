@@ -7,7 +7,10 @@ import { ImagemPerfil } from "../../components/ImagemPerfil/Style";
 import { InfoPerfil } from "../../components/InfoPerfil/Style";
 import { EmailPerfil, NamePerfil } from "../../components/Title/Style";
 import { Box } from "../../components/BoxCadastrar/Style";
-import { BoxInput } from "../../components/InputAndLabel/Index";
+import {
+  BoxInput,
+  BoxInputPreenchido,
+} from "../../components/InputAndLabel/Index";
 import {
   Button,
   ButtonBlock,
@@ -23,42 +26,27 @@ import { format, differenceInYears } from "date-fns";
 
 LogBox.ignoreAllLogs();
 
-export const Prontuario = ({ navigation, route }) => {
+export const ProntuarioPreenchido = ({ navigation, route }) => {
   const [consulta, setConsulta] = useState(null);
-  const [descricaoNova, setDescricaoNova] = useState("");
-  const [medicamentoNovo, setMedicamentoNovo] = useState("");
-  const [diagnosticoNovo, setDiagnosticoNovo] = useState("");
-
-  async function NovoProntuario() {
-    const promise = await api
-      .put(`/Consultas/Prontuario`, {
-        consultaId: route.params.consultaId,
-        medicamento: medicamentoNovo,
-        descricao: descricaoNova,
-        diagnostico: diagnosticoNovo,
-      })
-      .then(() => {
-        navigation.replace("Main");
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
 
   async function BuscarConsulta() {
-    // console.log("Coiso q ta vindo da home");
+    // console.log("Infooooo consultaaaaa");
     const promise = await api.get(
       `/Consultas/BuscarPorId?id=${route.params.consultaId}`
     );
+    // console.log(promise.data);
     setConsulta(promise.data);
-    setDescricaoNova(promise.data.descricao);
-    setDiagnosticoNovo(promise.data.diagnostico);
-    setMedicamentoNovo(promise.data.receita.medicamento);
   }
 
   const calculateAge = (dataNascimento) => {
     return differenceInYears(new Date(), new Date(dataNascimento));
   };
+
+  function HandlePressConsuta(item) {
+    // console.log("Tentando");
+    navigation.replace("Prontuario", { consultaId: item });
+    // console.log("????");
+  }
 
   useEffect(() => {
     BuscarConsulta();
@@ -91,43 +79,36 @@ export const Prontuario = ({ navigation, route }) => {
             </ImagemPerfil>
 
             <Box>
-              <BoxInput
+              <BoxInputPreenchido
                 textLabel="Descricao da consulta:"
                 placeholder="Descrição"
-                value={descricaoNova}
-                onChangeText={(txt) => setDescricaoNova(txt)}
+                value={consulta.descricao}
                 height={120}
                 paddingBottom={60}
-                editable={true}
+                editable={false}
                 multiline={true}
                 numberOfLines={4}
               />
-              <BoxInput
+              <BoxInputPreenchido
                 textLabel="Diagnóstico do paciente:"
                 placeholder="Diagnóstico"
-                value={diagnosticoNovo}
-                onChangeText={(txt) => setDiagnosticoNovo(txt)}
-                editable={true}
+                value={consulta.diagnostico}
+                editable={false}
               />
-              <BoxInput
+              <BoxInputPreenchido
                 textLabel="Prescrição médica:"
                 placeholder="Prescrição medica"
-                value={medicamentoNovo}
-                onChangeText={(txt) => setMedicamentoNovo(txt)}
+                value={consulta.receita.medicamento}
                 height={120}
                 paddingBottom={60}
-                editable={true}
+                editable={false}
                 multiline={true}
                 numberOfLines={4}
               />
 
-              <Button onPress={() => NovoProntuario()}>
-                <ButtonTitle>Salvar</ButtonTitle>
-              </Button>
-
-              <ButtonBlock>
+              <Button onPress={() => HandlePressConsuta(consulta.id)}>
                 <ButtonTitle>Editar</ButtonTitle>
-              </ButtonBlock>
+              </Button>
             </Box>
             <ButtonSecundario>
               <ButtonSecundarioTitleBlue

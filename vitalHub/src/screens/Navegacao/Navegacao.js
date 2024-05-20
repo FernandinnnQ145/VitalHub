@@ -1,5 +1,6 @@
-import { Button, View } from "react-native"
+import { Button, LogBox, View } from "react-native"
 import { ContainerScrollView } from "../../components/Container/Style"
+LogBox.ignoreAllLogs();
 
 
 

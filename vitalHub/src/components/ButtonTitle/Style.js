@@ -11,6 +11,13 @@ export const TitleGoogle = styled(ButtonTitle)`
 color: #496BBA;
 `
 
+export const ButtonTitleBlack = styled(ButtonTitle)`
+color: #33303E;
+text-align: justify;
+text-transform: none;
+font-family: MontserratAlternates_600SemiBold;
+`
+
 export const ButtonSecundarioTitleBlue = styled.Text`
 text-transform: capitalize;
 text-decoration: solid;

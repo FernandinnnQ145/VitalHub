@@ -13,6 +13,39 @@ export const Button = styled.TouchableOpacity`
   border: 1px solid #496bba;
 `;
 
+export const ButtonFakeInput = styled.TouchableOpacity`
+background-color: #F5F3F3;
+color: #33303E;
+margin-top: none;
+text-align: justify;
+width: 100%;
+border: 1px white;
+padding: 15px;
+border-radius: 5px;
+margin-top: 15px;
+margin-bottom: 15px;
+font-size: 14px;
+font-family: MontserratAlternates_600SemiBold;
+color: white;
+`
+
+export const ButtonBlock = styled(Button)`
+ background-color: #ACABB7;
+  border: #ACABB7;
+`
+
+export const ButtonSave = styled.TouchableOpacity`
+  margin-top: 25px;
+  width: 100%;
+  height: 44px;
+  padding: 12px 8px 12px 8px;
+  align-items: center;
+  justify-content: center;
+  background-color: #acabb7;
+  border-radius: 5px;
+  border: 1px solid #acabb7;
+`;
+
 export const ButtonGoogle = styled(Button)`
   background-color: #ffffff;
   margin-bottom: 40px;

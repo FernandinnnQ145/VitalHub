@@ -8,10 +8,34 @@ import { Input } from "../../components/Input/Style";
 import { Button } from "../../components/Button/Style";
 import { ButtonTitle } from "../../components/ButtonTitle/Style";
 import { LinkMediumCancelar } from "../../components/LinkMedium/Style";
+import { useState } from "react";
+import api from "../../services/service";
+import { AlertModal } from "../../components/AlertModal/AlertModal";
+import { LogBox } from "react-native";
+
+LogBox.ignoreAllLogs();
 
 export const RecuperarSenha = ({
     navigation
 }) => {
+    const [email, setEmail] = useState('')
+    //Alert de erro
+    const [showModalAlert, setShowModalAlert] = useState(false)
+    const [alert, setAlert] = useState("")
+
+    async function EnviarEmail() {
+        await api.post(`/RecuperarSenha?email=${email}`)
+            .then(() => {
+                navigation.replace("VerificarConta", { emailRecuperacao: email })
+
+            }).catch((error) => {
+                setAlert("Email invalido")
+                setShowModalAlert(true)
+                
+            })
+    }
+
+
     return (
         <Container>
 
@@ -29,14 +53,20 @@ export const RecuperarSenha = ({
                 <Input
                     placeholder='Usuario ou E-mail'
                     placeholderTextColor='#FFF'
+                    value={email}
+                    onChangeText={(txt) => setEmail(txt)}
                 />
-                <Button onPress={()=> navigation.replace("VerificarConta")}>
+                <Button onPress={() => EnviarEmail()}>
                     <ButtonTitle>Continuar</ButtonTitle>
                 </Button>
             </Box>
-            
 
 
+            <AlertModal
+                visible={showModalAlert}
+                setShowModalAlert={setShowModalAlert}
+                alert={alert}
+            />
 
 
 

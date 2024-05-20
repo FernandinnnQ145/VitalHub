@@ -1,40 +1,95 @@
-import { Modal, View } from "react-native"
-import { ModalContent, PatientModal } from "../CancelattionModal/Style"
-import { ImageModal, ModalContentAppointment } from "./Style"
-import { EmailPerfil, TitleGray } from "../Title/Style"
-import { ButtonModal, ButtonSecundario } from "../Button/Style"
-import { ButtonSecundarioTitleBlue, ButtonTitle } from "../ButtonTitle/Style"
+import { Modal, View } from "react-native";
+import { ModalContent, PatientModal } from "../CancelattionModal/Style";
+import { ImageModal, ModalContentAppointment } from "./Style";
+import { EmailPerfil, TitleGray } from "../Title/Style";
+import { ButtonModal, ButtonSecundario } from "../Button/Style";
+import { ButtonSecundarioTitleBlue, ButtonTitle } from "../ButtonTitle/Style";
+import { useEffect, useState } from "react";
+import api from "../../services/service";
+import { format, differenceInYears } from "date-fns";
 
 export const AppointmentModal = ({
-    visible,
-    setShowModalAppointment,
-    navigation,
-    ...rest
+  visible,
+  consulta,
+  medicamento,
+  diagnostico,
+  descricao,
+  setShowModalAppointment,
+  navigation,
+  idade,
+  ...rest
 }) => {
-    return (
-        <Modal {...rest} visible={visible} transparent={true} animationType="fade">
-            <PatientModal>
-                <ModalContent>
-                    <ImageModal
-                        source={require('../../assets/image/Image_Modal.png')}
-                    />
-                    <TitleGray>Niccole Sarga</TitleGray>
-                    <View style={{ flexDirection: "row", justifyContent: "space-between", width:270, marginTop:20 }}>
-                        <EmailPerfil>22 anos</EmailPerfil>
-                        <EmailPerfil>richard.kosta@gmail.com</EmailPerfil>
+  function HandlePress(rota) {
+    navigation.replace(rota, { consultaId: consulta.id });
+  }
 
-                    </View>
+  //Data de nascimento esta vindo errado, NaN anos
+  //Tentar arrumar isso depois
+  const calculateAge = (dataNascimento) => {
+    return differenceInYears(new Date(), new Date(dataNascimento));
+  };
 
+  function QualTelaProntuario(diagnostico, descricao) {
+    if (diagnostico != null && descricao != null) {
+      HandlePress("ProntuarioPreenchido");
+    } else {
+      HandlePress("Prontuario");
+    }
+  }
 
-                    <ButtonModal onPress={()=> navigation.navigate("Prontuario")}>
-                        <ButtonTitle>Inserir prontuario</ButtonTitle>
-                    </ButtonModal>
+  return (
+    <>
+      {consulta != null ? (
+        <Modal
+          {...rest}
+          visible={visible}
+          transparent={true}
+          animationType="fade"
+        >
+          <PatientModal>
+            <ModalContent>
+              <ImageModal
+                source={{ uri: consulta.paciente.idNavigation.foto }}
+              />
+              <TitleGray>{consulta.paciente.idNavigation.nome}</TitleGray>
 
-                    <ButtonSecundario onPress={() => setShowModalAppointment(false)}>
-                        <ButtonSecundarioTitleBlue>Cancelar</ButtonSecundarioTitleBlue>
-                    </ButtonSecundario>
-                </ModalContent>
-            </PatientModal>
+              <View
+                style={{
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  width: 270,
+                  marginTop: 20,
+                }}
+              >
+                <EmailPerfil>
+                  {calculateAge(consulta.paciente.dataNascimento)} anos
+                </EmailPerfil>
+                <EmailPerfil>
+                  {consulta.paciente.idNavigation.email}
+                </EmailPerfil>
+              </View>
+
+              <ButtonModal
+                onPress={() =>
+                  QualTelaProntuario(consulta.diagnostico, consulta.descricao)
+                }
+              >
+                <ButtonTitle>
+                  {consulta.diagnostico && consulta.descricao
+                    ? "Ver prontuario"
+                    : "Inserir prontuario"}
+                </ButtonTitle>
+              </ButtonModal>
+
+              <ButtonSecundario onPress={() => setShowModalAppointment(false)}>
+                <ButtonSecundarioTitleBlue>Cancelar</ButtonSecundarioTitleBlue>
+              </ButtonSecundario>
+            </ModalContent>
+          </PatientModal>
         </Modal>
-    )
-}
+      ) : (
+        <></>
+      )}
+    </>
+  );
+};

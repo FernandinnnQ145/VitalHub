@@ -1,129 +1,293 @@
-import { View } from "react-native"
-import { ContainerScrollView, Containerwhite } from "../../components/Container/Style"
-import { ImagemPerfil } from "../../components/ImagemPerfil/Style"
-import { InfoPerfil } from "../../components/InfoPerfil/Style"
-import { EmailPerfil, NamePerfil, TextPrescricao, TitleEnviaFoto } from "../../components/Title/Style"
-import { BoxInputPreenchido } from "../../components/InputAndLabel/Index"
-import { Box, BoxEspacoButtons, Linha } from "../../components/BoxCadastrar/Style"
-import { ColocarImagemBox } from "../../components/ColocarImagemBox/ColocarImagemBox"
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-import { ButtonSecundario, ButtonSecundarioRed, FotoEnviar } from "../../components/Button/Style"
-import { ButtonSecundarioTitleBlue, ButtonSecundarioTitleRed } from "../../components/ButtonTitle/Style"
-import { Label } from "../../components/Label"
-import { InputPreenchido } from "../../components/Input/Style"
+import { Image, LogBox, View } from "react-native";
+import {
+  ContainerScrollView,
+  Containerwhite,
+} from "../../components/Container/Style";
+import { ImagemPerfil } from "../../components/ImagemPerfil/Style";
+import { InfoPerfil } from "../../components/InfoPerfil/Style";
+import {
+  EmailPerfil,
+  NamePerfil,
+  TextPrescricao,
+  TitleEnviaFoto,
+} from "../../components/Title/Style";
+import { BoxInputPreenchido } from "../../components/InputAndLabel/Index";
+import {
+  Box,
+  BoxEspacoButtons,
+  Linha,
+} from "../../components/BoxCadastrar/Style";
+import { ColocarImagemBox } from "../../components/ColocarImagemBox/ColocarImagemBox";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import {
+  ButtonSecundario,
+  ButtonSecundarioRed,
+  FotoEnviar,
+} from "../../components/Button/Style";
+import {
+  ButtonSecundarioTitleBlue,
+  ButtonSecundarioTitleRed,
+} from "../../components/ButtonTitle/Style";
+import { Label } from "../../components/Label";
+import { InputPreenchido } from "../../components/Input/Style";
+import { useEffect, useState } from "react";
+import api from "../../services/service";
+import { ImageOcr } from "./Style";
 // import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-export const PrescricaoConsulta = ({
-    navigation
-}) => {
+LogBox.ignoreAllLogs();
 
+export const PrescricaoConsulta = ({ navigation, route }) => {
+  const [consulta, setConsulta] = useState(null);
+  const [descricaoExame, setDescricaoExame] = useState("");
+  // const [textoOcr, setTextoOcr] = useState("");
 
-    
-    return (
-        
-        <ContainerScrollView>
-            <Containerwhite>
+  async function BuscarConsulta() {
+    // console.log("Infooooo consultaaaaa");
+    await api
+      .get(`/Consultas/BuscarPorId?id=${route.params.consultaId}`)
+      .then((response) => {
+        setConsulta(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    await getExame();
+  }
 
-                <ImagemPerfil
-                    source={require('../../assets/image/Imagem_medico_prescricao.png')}>
-                    <InfoPerfil>
-                        <NamePerfil>Richard Kosta</NamePerfil>
-                        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                            <EmailPerfil>Cliníco geral</EmailPerfil>
-                            <EmailPerfil>CRM-15286</EmailPerfil>
+  // async function InserirExame() {
+  //   try{
+  //   console.log("_____________________");
 
-                        </View>
+  //   const formData = new FormData();
 
-                    </InfoPerfil>
-                </ImagemPerfil>
+  //   formData.append("ConsultaId", route.params.consultaId);
+  //   formData.append("Imagem", {
+  //     uri: route.params.uriPhoto,
+  //     name: `image.${route.params.uriPhoto.split(".").pop()}`,
+  //     type: `image/${route.params.uriPhoto.split(".").pop()}`,
+  //   });
 
+  //   console.log(route.params.consultaId)
 
+  //   console.log({
+  //     uri: route.params.uriPhoto,
+  //     name: `image.${route.params.uriPhoto.split(".").pop()}`,
+  //     type: `image/${route.params.uriPhoto.split(".").pop()}`
+  //   });
 
+  //   // await api
+  //   //   .post(`/Exame/Cadastrar`, formData, {
+  //   //     headers: {
+  //   //       "Content-Type": "multipart/form-data",
+  //   //     },
+  //   //   })
+  //   //   .then((response) => {
+  //   //     setDescricaoExame(descricaoExame + "\n" + response.data.descricao);
+  //   //   }atch((error) => {
+  //   //     console.log(error);
+  //   //   });
+  //   //   .c
+  //       const response = await api
+  //       .post("/Exame/Cadastrar", formData, {
+  //         headers: {
+  //           "Content-Type": "multipart/form-data",
+  //         },
+  //       })
 
-                <Box>
-                    <BoxInputPreenchido
-                        textLabel='Descrição da consulta'
-                        placeholder='O paciente possuí uma infecção no
-                        ouvido. Necessário repouse de 2 dias
-                        e acompanhamento médico constante'
-                        paddingBottom={60}
-                        height={120}
-                        multiline={true}
-                        editable={true}
-                    />
+  //       setDescricaoExame(response.data)
 
-                    <BoxInputPreenchido
-                        textLabel='Diagnóstico do paciente'
-                        value='Infecção no ouvido'
-                    />
+  //       console.log(response)
 
-                    <BoxInputPreenchido
-                        textLabel='Prescrição médica'
-                        placeholder='
-                        Medicamento: Advil
-                        Dosagem: 50 mg
-                        Frequência: 3 vezes ao dia
-                        Duração: 3 dias'
-                        editable={true}
-                        paddingBottom={60}
-                        height={133}
-                        multiline={true}
-                        numberOfLines={4}
-                    />
-                </Box>
+  //       console.log(descricaoExame);
 
-                <Box>
-                    <Label
-                        textLabel='Exames médicos'
-                    />
-                </Box>
+  //     }catch(error){
+  //       console.log(error)
+  //       console.log(error)
+  //     }
+  // }
 
-                <ColocarImagemBox>
-                    <MaterialCommunityIcons name="file-alert-outline" size={24} color="#4E4B59" />
-                    <TextPrescricao>Nenhuma foto informada</TextPrescricao>
-                </ColocarImagemBox>
+  async function InserirExame() {
+    try {
+      console.log("Iniciando inserção de exame...");
 
-                <Box>
+      const formData = new FormData();
+      formData.append("ConsultaId", route.params.consultaId);
+      formData.append("Imagem", {
+        uri: route.params.uriPhoto,
+        name: `image.${route.params.uriPhoto.split(".").pop()}`,
+        type: `image/${route.params.uriPhoto.split(".").pop()}`,
+      });
+      formData.append("Descricao", response);
 
+      console.log("FormData criado:");
+      console.log(formData);
 
-                    <BoxEspacoButtons>
-                        <FotoEnviar onPress={()=> navigation.replace("CameraComponent")}>
-                            <MaterialCommunityIcons name="camera-plus-outline" size={24} color="#FFFFFF" />
-                            <TitleEnviaFoto>Enviar</TitleEnviaFoto>
-                        </FotoEnviar>
+      console.log("Enviando requisição para a API...");
 
-                        <ButtonSecundarioRed>
-                            <ButtonSecundarioTitleRed>Cancelar</ButtonSecundarioTitleRed>
-                        </ButtonSecundarioRed>
-                    </BoxEspacoButtons>
-                </Box>
+      const response = await api.post(`/Exame/Cadastrar`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
-                <Linha />
+      console.log("Requisição bem-sucedida. Resposta da API:");
+      console.log(response.data);
 
-                <Box>
-                    <InputPreenchido
-                        value="Resultado do exame de sangue: 
-                        
-                        
-                        normal"
-                        multiline={true}
-                        numberOfLines={2}
-                        height={103}
-                    />
+      // setDescricaoExame(descricaoExame + "\n" + response.data.descricao);
+      if (
+        response.data.descricao !=
+        "Erro ao reconhecer o texto: Operation returned an invalid status code 'BadRequest'"
+      ) {
+        setDescricaoExame(descricaoExame + "\n" + response.data.descricao);
+      }
+    } catch (error) {
+      console.log("Erro ao enviar requisição para a API. Detalhes do erro:");
+      console.log(error);
 
-                </Box>
+      if (error.response) {
+        console.log("Resposta de erro da API:");
+        console.log(error.response.data);
+      }
+    }
+  }
 
+  async function getExame() {
+    const response = await api.get(
+      `Exame/BuscarPorIdConsulta?idConsulta=${consulta.id}`
+    );
+    console.log("aaaa");
+    console.log(response.data);
+    response.data.map((item) => {
+      console.log("AQUIIIIIIIIIIII");
+      console.log(item.descricao);
+      console.log(descricaoExame + "\n" + item.descricao);
+      setDescricaoExame(descricaoExame + "\n" + item.descricao);
+    });
+  }
 
+  useEffect(() => {
+    BuscarConsulta();
+  }, []);
 
+  useEffect(() => {
+    if (route.params != null) {
+      InserirExame();
+    }
+  }, [route.params]);
 
-                <ButtonSecundario onPress={()=> navigation.replace("Main")}>
-                    <ButtonSecundarioTitleBlue>Voltar</ButtonSecundarioTitleBlue>
-                </ButtonSecundario>
-            </Containerwhite>
-        </ContainerScrollView>
+  return (
+    <ContainerScrollView>
+      <Containerwhite>
+        {consulta != null ? (
+          <>
+            <ImagemPerfil
+              source={{ uri: consulta.medicoClinica.medico.idNavigation.foto }}
+            >
+              <InfoPerfil>
+                <NamePerfil>
+                  {consulta.medicoClinica.medico.idNavigation.nome}
+                </NamePerfil>
+                <View
+                  style={{
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                  }}
+                >
+                  <EmailPerfil>
+                    {consulta.medicoClinica.medico.especialidade.especialidade1}
+                  </EmailPerfil>
+                  <EmailPerfil>
+                    CRM-{consulta.medicoClinica.medico.crm}
+                  </EmailPerfil>
+                </View>
+              </InfoPerfil>
+            </ImagemPerfil>
 
+            <Box>
+              <BoxInputPreenchido
+                textLabel="Descrição da consulta"
+                value={consulta.descricao}
+                paddingBottom={60}
+                height={120}
+                multiline={true}
+                editable={false}
+              />
 
+              <BoxInputPreenchido
+                textLabel="Diagnóstico do paciente"
+                value={consulta.diagnostico}
+                editable={false}
+              />
 
+              <BoxInputPreenchido
+                textLabel="Prescrição médica"
+                value={consulta.receita.medicamento}
+                editable={false}
+                paddingBottom={60}
+                height={133}
+                multiline={true}
+                numberOfLines={4}
+              />
+            </Box>
 
-    )
-}
+            <Box>
+              <Label textLabel="Exames médicos" />
+            </Box>
+
+            <ColocarImagemBox>
+              {route.params.uriPhoto == undefined ? (
+                <>
+                  <MaterialCommunityIcons
+                    name="file-alert-outline"
+                    size={24}
+                    color="#4E4B59"
+                  />
+                  <TextPrescricao>Nenhuma foto informada</TextPrescricao>
+                </>
+              ) : (
+                <ImageOcr source={{ uri: route.params.uriPhoto }} />
+              )}
+            </ColocarImagemBox>
+
+            <Box>
+              <BoxEspacoButtons>
+                <FotoEnviar
+                  onPress={() =>
+                    navigation.navigate("CameraComponent", {
+                      screen: "PrescricaoConsulta",
+                      idConsulta: consulta.id,
+                    })
+                  }
+                >
+                  <MaterialCommunityIcons
+                    name="camera-plus-outline"
+                    size={24}
+                    color="#FFFFFF"
+                  />
+                  <TitleEnviaFoto>Enviar</TitleEnviaFoto>
+                </FotoEnviar>
+
+                <ButtonSecundarioRed>
+                  <ButtonSecundarioTitleRed>Cancelar</ButtonSecundarioTitleRed>
+                </ButtonSecundarioRed>
+              </BoxEspacoButtons>
+            </Box>
+
+            <Linha />
+
+            <ColocarImagemBox>
+              <TextPrescricao>{descricaoExame}</TextPrescricao>
+            </ColocarImagemBox>
+
+            <ButtonSecundario onPress={() => navigation.replace("Main")}>
+              <ButtonSecundarioTitleBlue>Voltar</ButtonSecundarioTitleBlue>
+            </ButtonSecundario>
+          </>
+        ) : (
+          <></>
+        )}
+      </Containerwhite>
+    </ContainerScrollView>
+  );
+};

@@ -2,16 +2,25 @@ import { NomeClinica } from "../CardClinicas/Style";
 import { ImagePaciente } from "../ImagemPerfil/Style";
 import { BoxCardMedico, BoxInfoMedico, InfoMedico } from "./Style";
 
-export const CardMedico = ({ onPress, clickButton, medicos }) => {
+export const CardMedico = ({ selected, medico, setMedico }) => {
   return (
-    <BoxCardMedico onPress={onPress} clickButton={clickButton}>
+    <BoxCardMedico
+      onPress={() =>
+        setMedico({
+          medicoClinicaId: medico.id,
+          medicoLabel: medico.idNavigation.nome,
+          medicoEspecialidade: medico.especialidade.especialidade1,
+        })
+      }
+      selected={selected}
+    >
       <ImagePaciente
-        source={require("../../assets/image/Imagem_Escolha_Medico.png")}
+        source={{uri: medico.idNavigation.foto}}
       />
 
       <BoxInfoMedico>
-        <NomeClinica>{medicos.idNavigation.nome}</NomeClinica>
-        <InfoMedico>{medicos.especialidade.especialidade1}</InfoMedico>
+        <NomeClinica>{medico.idNavigation.nome}</NomeClinica>
+        <InfoMedico>{medico.especialidade.especialidade1}</InfoMedico>
       </BoxInfoMedico>
     </BoxCardMedico>
   );

@@ -1,93 +1,99 @@
-import { useEffect, useState } from "react"
-import { Box } from "../../components/BoxCadastrar/Style"
-import { Button, ButtonSecundario, ButtonSecundarioPag } from "../../components/Button/Style"
-import { ButtonSecundarioTitleBlue, ButtonTitle, TitleGoogle } from "../../components/ButtonTitle/Style"
-import { CardClinicas } from "../../components/CardClinicas/CardClinicas"
-import { Containerwhite } from "../../components/Container/Style"
-import { ListComponent } from "../../components/List/List"
-import { TitleGrayMargin } from "../../components/Title/Style"
-import api from "../../services/service"
+import { useEffect, useState } from "react";
+import { Box } from "../../components/BoxCadastrar/Style";
+import {
+  Button,
+  ButtonSecundario,
+  ButtonSecundarioPag,
+} from "../../components/Button/Style";
+import {
+  ButtonSecundarioTitleBlue,
+  ButtonTitle,
+  TitleGoogle,
+} from "../../components/ButtonTitle/Style";
+import { CardClinicas } from "../../components/CardClinicas/CardClinicas";
+import { Containerwhite } from "../../components/Container/Style";
+import { ListComponent } from "../../components/List/List";
+import { TitleGrayMargin } from "../../components/Title/Style";
+import api from "../../services/service";
+import { LogBox } from "react-native";
 
-export const SelecionarClinica = ({
-    navigation,
-    route
-}) => {
+LogBox.ignoreAllLogs();
 
-    const { setShowModalAgendar } = route.params;
+export const SelecionarClinica = ({ navigation, route }) => {
+  const { setShowModalAgendar } = route.params;
 
-    async function Login() {
-        navigation.navigate("Main")
+  async function Login() {
+    navigation.navigate("Main");
 
-        setShowModalAgendar(true)
-    }
-    // const Clinicas = [
-    //     { id: 1, nome: "Fernando", },
-    //     { id: 2, nome: "Fernando",},
-    //     { id: 3, nome: "Fernando", },
-    // ]
+    setShowModalAgendar(true);
+  }
+  // const Clinicas = [
+  //     { id: 1, nome: "Fernando", },
+  //     { id: 2, nome: "Fernando",},
+  //     { id: 3, nome: "Fernando", },
+  // ]
+  const [styleCard, setStyleCard] = useState(false);
 
+  const [selectClinicaId, setSelectClinicaId] = useState(0);
 
-    const [selectClinicaId, setSelectClinicaId] = useState(0)
+  //criar o state para receber a lista de medicos (array)
+  const [clinicas, setClinicas] = useState([]);
+  const [clinica, setClinica] = useState(null);
 
+  //criar a funcao para listar ou para obter a lista de clinicas da api e setar no state
+  async function getClinicas() {
+    const promise = await api.get(
+      `/Clinica/BuscarPorCidade?cidade=${route.params.agendamento.localizacao}`
+    );
+    const data = promise.data;
 
-    //criar o state para receber a lista de medicos (array)
-    const [clinica, setClinica] = useState([]);
+    setClinicas(data);
+  }
 
-    //criar a funcao para listar ou para obter a lista de clinicas da api e setar no state
-    async function getClinicas() {
-        // console.log("AAAAAAAAAAAAAA");
-        const promise = await api.get("/Clinica/ListarTodas");
-        const data = promise.data;
+  function handleContinue() {
+    navigation.replace("SelecionarMedico", {
+      agendamento: {
+        ...route.params.agendamento,
+        ...clinica,
+      },
+    });
+  }
 
-        // console.log(data);
-        //  console.log("bbbbbbbbbbbb");
-         
+  //criar um effect para chamada da função
+  useEffect(() => {
+    getClinicas();
+  }, []);
 
+  return (
+    <Containerwhite>
+      <TitleGrayMargin>Selecionar clinica</TitleGrayMargin>
 
-        setClinica(data);
+      {/* FlatList que sera feito mais tarde */}
+      <ListComponent
+        data={clinicas}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <CardClinicas
+            selected={clinica ? clinica.clinicaId == item.id : false}
+            clinica={item}
+            setClinica={setClinica}
+            // clickButton={styleCard}
+            // styleCard={styleCard}
+            // setStyleCard={setStyleCard}
+          />
+        )}
+        showsVerticalScrollIndicator={false}
+      />
 
+      <Box>
+        <Button onPress={() => handleContinue()}>
+          <ButtonTitle>Continuar</ButtonTitle>
+        </Button>
+      </Box>
 
-    }
-
-    //criar um effect para chamada da função
-    useEffect(() => {
-        getClinicas();
-    }, [])
-
-
-
-
-    return (
-        <Containerwhite>
-            <TitleGrayMargin>Selecionar clinica</TitleGrayMargin>
-
-
-            {/* FlatList que sera feito mais tarde */}
-            <ListComponent
-                data={clinica}
-                keyExtractor={(item) => item.id}
-                renderItem={({ item }) =>
-                    <CardClinicas
-                        clinica={item}
-                        onPress={() => setSelectClinicaId(item.id)}
-                        clickButton={item.id == selectClinicaId}
-                    />
-
-                }
-                showsVerticalScrollIndicator={false}
-            />
-
-
-            <Box>
-                <Button onPress={() => navigation.replace("SelecionarMedico")}>
-                    <ButtonTitle>Continuar</ButtonTitle>
-                </Button>
-            </Box>
-
-            <ButtonSecundarioPag onPress={() => Login()}>
-                <ButtonSecundarioTitleBlue>Cancelar</ButtonSecundarioTitleBlue>
-            </ButtonSecundarioPag>
-
-        </Containerwhite>
-    )
-}
+      <ButtonSecundarioPag onPress={() => Login()}>
+        <ButtonSecundarioTitleBlue>Cancelar</ButtonSecundarioTitleBlue>
+      </ButtonSecundarioPag>
+    </Containerwhite>
+  );
+};

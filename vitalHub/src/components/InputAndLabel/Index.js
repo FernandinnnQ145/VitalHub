@@ -15,7 +15,8 @@ export const BoxInputPreenchido = ({
     paddingBottom,
     multiline,
     numberOfLines,
-    keyboardType
+    keyboardType,
+    maxLength
 
 }) => {
     return (
@@ -38,7 +39,7 @@ export const BoxInputPreenchido = ({
                     paddingBottom={paddingBottom}
                     numberOfLines={numberOfLines}
                     keyboardType={keyboardType}
-
+maxLength={maxLength}
                 />
             </FieldContent>
 

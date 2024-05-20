@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   BoxMensagemHome,
   BoxTitleAndImage,
@@ -22,6 +22,12 @@ import { MedicoModal } from "../../components/MedicoModal/MedicoModal";
 import { UserDecodeToken } from "../../utils/Auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../services/service";
+import { CancelattionModalPaciente } from "../../components/CancelattionModalPaciente/CancelationModalPaciente";
+import { LogBox } from "react-native";
+import { useFocusEffect } from "@react-navigation/native";
+import { StatusBar } from "expo-status-bar";
+
+LogBox.ignoreAllLogs();
 
 export const HomePaciente = ({ navigation }) => {
   const [nome, setNome] = useState("");
@@ -38,10 +44,14 @@ export const HomePaciente = ({ navigation }) => {
 
   const [consultaSelecionada, setConsultaSelecionada] = useState(null);
 
+  const [foto, setFoto] = useState(null);
+
+  const [styleButton, setStyleButton] = useState(true);
+
+  const [situacao, setSituacao] = useState("");
+
   async function profileLoad() {
     const token = await UserDecodeToken();
-
-    console.log(token);
 
     if (token) {
       setNome(token.name);
@@ -50,15 +60,17 @@ export const HomePaciente = ({ navigation }) => {
 
   async function getConsultas() {
     const token = await UserDecodeToken();
-    // console.log("CONSULTASSSSSSSSSSSSSSSSS"${dataConsulta});
+
     const promise = await api.get(
       `/Pacientes/BuscarPorData?data=${dataConsulta}&id=${token.id}`
     );
     const data = await promise.data;
-    console.log(data);
-
     setConsultas(data);
     setStatusLista(data.situacao.situacao);
+  }
+
+  function HandlePressConsuta(rota, consulta) {
+    navigation.replace(rota, { consultaId: consulta.id });
   }
 
   //Funcao para os modais
@@ -67,28 +79,42 @@ export const HomePaciente = ({ navigation }) => {
 
     if (modal == "cancelar") {
       setShowModalCancel(true);
+      setSituacao(consulta.situacao.situacao);
     } else {
       setShowModalMedico(true);
     }
   }
 
+  async function getPhoto() {
+    const token = await UserDecodeToken();
+    const promise = await api.get(
+      token.role == "Médico"
+        ? `/Medicos/BuscarPorId?id=${token.id}`
+        : `/Pacientes/BuscarPorId?id=${token.id}`
+    );
+    const data = promise.data;
+
+    setFoto(data.idNavigation.foto);
+
+    // console.log("aqioooooooooooooooooooo");
+    // console.log(data);
+  }
+
   useEffect(() => {
     profileLoad();
+    getPhoto();
     // getConsultas();
   }, []);
 
   useEffect(() => {
-    console.log(dataConsulta);
     getConsultas();
-  }, [dataConsulta]);
+  }, [dataConsulta, situacao]);
 
   return (
     <Containerwhite>
       <HeaderHome>
         <BoxTitleAndImage>
-          <ImagemPerfilHome
-            source={require("../../assets/image/Outra_Img_Medico.png")}
-          />
+          <ImagemPerfilHome source={{ uri: foto }} />
 
           <BoxMensagemHome>
             <TextSubCriar>Bem vindo</TextSubCriar>
@@ -131,7 +157,7 @@ export const HomePaciente = ({ navigation }) => {
               // situacao={item.situacao}
               onPressCancel={() => MostrarModal("cancelar", item)}
               onPressAppointment={() =>
-                navigation.replace("PrescricaoConsulta")
+                HandlePressConsuta("PrescricaoConsulta", item)
               }
               onPressMedico={() => MostrarModal("local", item)}
             />
@@ -145,10 +171,11 @@ export const HomePaciente = ({ navigation }) => {
       </ButtonAgendar>
 
       {/* modal cancelar */}
-      <CancelattionModal
+      <CancelattionModalPaciente
         consulta={consultaSelecionada}
         visible={showModalCancel}
         setShowModalCancel={setShowModalCancel}
+        setSituacao={setSituacao}
       />
 
       {/* modal ver prontuario */}
@@ -157,6 +184,9 @@ export const HomePaciente = ({ navigation }) => {
         visible={showModalAgendar}
         setShowModalAgendar={setShowModalAgendar}
         navigation={navigation}
+        // clickButton={styleButton}
+        styleButton={styleButton}
+        setStyleButton={setStyleButton}
       />
 
       <MedicoModal

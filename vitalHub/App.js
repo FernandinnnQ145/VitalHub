@@ -32,6 +32,8 @@ import Camera from "./src/screens/Camera/Camera";
 import { TextInput } from "react-native";
 import { UserDecodeToken } from "./src/utils/Auth";
 import { useEffect } from "react";
+import { ProntuarioPreenchido } from "./src/screens/ProntuarioPreenchido/ProntuarioPreenchido";
+import { faL } from "@fortawesome/free-solid-svg-icons";
 
 const Stack = createNativeStackNavigator();
 
@@ -58,7 +60,7 @@ export default function App() {
     //options: title da tela
 
     <NavigationContainer>
-      <Stack.Navigator>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen
           name="Login"
           component={Login}
@@ -103,6 +105,11 @@ export default function App() {
           name="Prontuario"
           component={Prontuario}
           options={{ title: "Prontuario" }}
+        />
+        <Stack.Screen
+          name="ProntuarioPreenchido"
+          component={ProntuarioPreenchido}
+          options={{ title: "ProntuarioPreenchido" }}
         />
         <Stack.Screen
           name="HomeMedico"

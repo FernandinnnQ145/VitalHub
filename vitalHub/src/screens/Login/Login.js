@@ -1,4 +1,4 @@
-import { ActivityIndicator, Text } from "react-native";
+import { ActivityIndicator, LogBox, Text } from "react-native";
 import { Container } from "../../components/Container/Style";
 import { Logo } from "../../components/Logo/Style";
 import { Title } from "../../components/Title/Style";
@@ -12,16 +12,18 @@ import {
   ContentDuvida,
   ContentLink,
 } from "../../components/ContentAcount/Style";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, Ionicons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 // import { InputSenha } from "../../components/Input/Index";
 
 import api from "../../services/service";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
+LogBox.ignoreAllLogs();
+
 export const Login = ({ navigation }) => {
-  const [email, setEmail] = useState("enzo@email.com");
-  const [senha, setSenha] = useState("1234");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
   const [isDisabled, setIsDisabled] = useState(false);
 
@@ -35,15 +37,8 @@ export const Login = ({ navigation }) => {
         senha: senha,
       })
       .then(async (response) => {
-        // console.log("RESPOSTA:::::::::::::::::");
-        // console.log(response);
-
         await AsyncStorage.setItem("token", JSON.stringify(response.data));
         const token = await AsyncStorage.getItem("token");
-
-        // console.log("TOKEN DO LOGIN::::::::::");
-        // console.log(token);
-
         navigation.replace("Main");
 
         setIsLoaded(false);
@@ -71,6 +66,7 @@ export const Login = ({ navigation }) => {
           valueColor="#FFFFF"
           value={senha}
           onChangeText={(txt) => setSenha(txt)}
+          secureTextEntry={true}
         />
         <LinkMedium onPress={() => navigation.replace("RecuperarSenha")}>
           Esqueceu sua senha?
@@ -88,7 +84,6 @@ export const Login = ({ navigation }) => {
 
           <TitleGoogle>Entrar com google</TitleGoogle>
         </ButtonGoogle>
-
         <ContentAcount>
           <ContentDuvida>Nao tem conta? </ContentDuvida>
           <ContentLink onPress={() => navigation.replace("CriarConta")}>

@@ -13,14 +13,11 @@ if (!global.btoa) {
 export const UserDecodeToken = async () => {
   const token = JSON.parse(await AsyncStorage.getItem("token")).token;
 
-  // console.log(token);
-
   if (token === null) {
     return null;
   }
   //decodifica o token recebido
   const decoded = jwtDecode(token);
-  //  console.log(decoded);
 
   return {
     name: decoded.name,
